@@ -1,5 +1,5 @@
 {
-  "name": "shipengine/shipengine",
+  "name": "sjzurek/shipengine-php",
   "type": "library",
   "description": "PHP library for the ShipEngine API.",
   "keywords": [
@@ -7,7 +7,7 @@
     "api",
     "shipping"
   ],
-  "homepage": "https://github.com/ShipEngine/shipengine-php",
+  "homepage": "https://github.com/sjzurek/shipengine-php",
   "license": "Apache-2.0",
   "authors": [
     {

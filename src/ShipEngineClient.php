@@ -15,6 +15,7 @@ use ShipEngine\Message\ShipEngineException;
 use ShipEngine\Message\SystemException;
 use ShipEngine\Message\ValidationException;
 use ShipEngine\Util\Assert;
+use ShipEngine\Util\DbLogger;
 
 /**
  * A wrapped `REST` HTTP client to send HTTP requests from the SDK.
@@ -160,6 +161,12 @@ final class ShipEngineClient
                 ['timeout' => $config->timeout->s, 'http_errors' => false]
             );
         } catch (ClientException $err) {
+            DbLogger::log([
+                'method'           => $method,
+                'path'             => $path,
+                'request_body'     => $jsonData,
+                'response_condition' => $err->getMessage(),
+            ]);
             throw new ShipEngineException(
                 "An unknown error occurred while calling the ShipEngine $method API:\n" .
                 $err->getMessage(),
@@ -178,6 +185,16 @@ final class ShipEngineClient
         // $assert->isResponse404($statusCode, $parsedResponse);
         // $assert->isResponse429($statusCode, $parsedResponse, $config);
         // $assert->isResponse500($statusCode, $parsedResponse);
+
+        DbLogger::log([
+            'method'           => $method,
+            'path'             => $path,
+            'request_id'       => $parsedResponse['request_id'] ?? null,
+            'status_code'      => $statusCode,
+            'request_body'     => $jsonData,
+            'response_body'    => $responseBody,
+            'response_headers' => json_encode($response->getHeaders(), JSON_UNESCAPED_SLASHES),
+        ]);
 
         return $this->handleResponse($parsedResponse);
     }
