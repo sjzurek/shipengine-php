@@ -181,6 +181,7 @@ final class ShipEngineClient
 
         $parsedResponse = json_decode($responseBody, true);
         $statusCode = $response->getStatusCode();
+        $responseHeaders = $response->getHeaders();
 
         // $assert->isResponse404($statusCode, $parsedResponse);
         // $assert->isResponse429($statusCode, $parsedResponse, $config);
@@ -189,11 +190,11 @@ final class ShipEngineClient
         DbLogger::log([
             'method'           => $method,
             'path'             => $path,
-            'request_id'       => $parsedResponse['request_id'] ?? null,
+            'request_id'       => $responseHeaders['request-id'][0] ?? $responseHeaders['x-shipengine-requestid'][0],
             'status_code'      => $statusCode,
             'request_body'     => $jsonData,
             'response_body'    => $responseBody,
-            'response_headers' => json_encode($response->getHeaders(), JSON_UNESCAPED_SLASHES),
+            'response_headers' => json_encode($responseHeaders, JSON_UNESCAPED_SLASHES),
         ]);
 
         return $this->handleResponse($parsedResponse);
